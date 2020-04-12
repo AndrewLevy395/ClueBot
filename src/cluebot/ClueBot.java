@@ -6,6 +6,7 @@
 
 package cluebot;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -14,22 +15,30 @@ import java.util.Scanner;
  */
 public class ClueBot
 {
-    static Integer numPlayers;
-    static OppPlayer[] players;
-    static Boolean gameOver;
+    private static OppPlayer[] players; //array of all opposing players
+    private static String[] suspects = new String[] {"plum", "white", "scarlet", "green", "mustard", "peacock"};
+    private static String[] weapons = new String[] {"knife", "rope", "revolver", "candlestick", "lead pipe", "wrench"};
+    private static String[] rooms = new String[] {"hall", "ballroom", "conservatory", "billiard room", "study", "kitchen", "library", "lounge", "dining room"};
+    private static ArrayList<Card> allCards = new ArrayList<>(); //list of all cards
+    private static ArrayList<Card> hand = new ArrayList<>();; //list of cards in player's personal hand
+    private static ClueBotLogic cluebotlogic = new ClueBotLogic();
+    private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
+        ClueBot.addToCardSet(suspects, "suspects");
+        ClueBot.addToCardSet(weapons, "weapons");
+        ClueBot.addToCardSet(rooms, "rooms");
         System.out.println("Hello and Welcome to ClueBot!");
         System.out.println("How many players? (including yourself)");
-        Scanner scanner = new Scanner(System.in);
-        numPlayers = Integer.parseInt(scanner.nextLine());
-        players = new OppPlayer[numPlayers];
+        Integer numPlayers = Integer.parseInt(scanner.nextLine());
+        players = new OppPlayer[numPlayers - 1];
         for(Integer i = 0; i < numPlayers - 1; i++) {
             System.out.println("Opposing Player " + (i + 1) + " name?");
-            OppPlayer player = new OppPlayer(scanner.nextLine());
+            OppPlayer player = new OppPlayer(scanner.nextLine().toLowerCase());
             players[i] = player;
         }
-        gameOver = false;
+
+        Boolean gameOver = false;
         while(gameOver == false) {
             System.out.println("What is the next clue? (Type \"help\" for options)");
             String clue = scanner.nextLine();
@@ -56,8 +65,38 @@ public class ClueBot
         scanner.close();
     }
 
-    public static void reveal(){
-        System.out.println("REVEAL");
+    public static void reveal() {
+        Card revealCard = null;
+
+        Boolean valid = false;
+        while(valid == false) {
+            System.out.println("Which card was revealed to you?");
+            String revealCardString = scanner.nextLine().toLowerCase();
+            for(Integer j = 0; j < allCards.size(); j++){
+                if(allCards.get(j).getName().equals(revealCardString)){
+                    revealCard = allCards.get(j);
+                    valid = true;
+                }
+            }
+            if(revealCard == null){
+                System.out.println("Invalid card name");
+            }
+        }
+
+        valid = false;
+        while(valid == false) {
+            System.out.println("Which opposing player revealed that card to you?");
+            String revealPlayerString = scanner.nextLine().toLowerCase();
+            for(Integer j = 0; j < players.length; j++){
+                if(players[j].getName().equals(revealPlayerString)){
+                    valid = true;
+                    players[j].reveal(revealCard);
+                }
+            }
+            if(valid == false){
+                System.out.println("Invalid player name");
+            }
+        }
     }
 
     public static void witness(){
@@ -66,5 +105,16 @@ public class ClueBot
 
     public static void pass(){
         System.out.println("PASS");
+    }
+
+    /**
+     * Adds all of the cards of one card type to the list of total cards
+     * @param cards String array of all cards of one type
+     * @param type The tpye of cards
+     */
+    public static void addToCardSet(String[] cards, String type){
+        for(Integer k = 0; k < cards.length; k++){
+            allCards.add(new Card(cards[k], type));
+        }
     }
 }

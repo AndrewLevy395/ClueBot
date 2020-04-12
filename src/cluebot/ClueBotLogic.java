@@ -10,7 +10,9 @@ package cluebot;
  * Description
  * @version Apr 9, 2020
  */
-public class ClueBotLogic
-{
+public class ClueBotLogic {
 
+    public ClueBotLogic(){
+
+    }
 }
