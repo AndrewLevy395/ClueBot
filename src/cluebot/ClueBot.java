@@ -20,7 +20,7 @@ public class ClueBot
     private static String[] weapons = new String[] {"knife", "rope", "revolver", "candlestick", "lead pipe", "wrench"};
     private static String[] rooms = new String[] {"hall", "ballroom", "conservatory", "billiard room", "study", "kitchen", "library", "lounge", "dining room"};
     private static ArrayList<Card> allCards = new ArrayList<>(); //list of all cards
-    private static ArrayList<Card> hand = new ArrayList<>();; //list of cards in player's personal hand
+    private static ArrayList<Card> hand = new ArrayList<>(); //list of cards in player's personal hand
     private static ClueBotLogic cluebotlogic = new ClueBotLogic();
     private static Scanner scanner = new Scanner(System.in);
 
@@ -52,10 +52,14 @@ public class ClueBot
                 case "pass":
                     ClueBot.pass();
                     break;
+                case "remove":
+                    ClueBot.remove();
+                    break;
                 case "help":
                     System.out.println("Type one of three options:");
                     System.out.println("Reveal - an opposing player reveals a card to you after you make a suggestion");
                     System.out.println("Witness - witness an opposing player reveal a card to another opposing player after they make a suggestion");
+                    System.out.println("Remove - remove a prior clue");
                     System.out.println("Pass - an opposing player has no cards and must pass during a suggestion");
                     break;
                 default:
@@ -65,6 +69,10 @@ public class ClueBot
         scanner.close();
     }
 
+    /**
+     * Method that runs when an opposing player reveals a card to the user
+     * Asks for the card and the opposing player and updates the opposing players hand
+     */
     public static void reveal() {
         Card revealCard = null;
 
@@ -105,6 +113,10 @@ public class ClueBot
 
     public static void pass(){
         System.out.println("PASS");
+    }
+
+    public static void remove(){
+        System.out.println("REMOVE");
     }
 
     /**

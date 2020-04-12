@@ -37,9 +37,23 @@ public class OppPlayer {
         return this.name;
     }
 
+    /**
+     * Takes the revealed card and adds it to the players hand
+     * Removes card from the players possible list of cards
+     * @param card Card that was revealed to the user
+     */
     public void reveal(Card card){
-        System.out.println("REVEAL LOGIC");
-        System.out.println(this.getName());
-        System.out.println(card.getName());
+        this.hand.add(card);
+        Card removeCard = null;
+        for(ArrayList<Card> suggestion : possibleCards){
+            for(Card suggestedCard : suggestion){
+                if(suggestedCard.getName().equals(card.getName())){
+                    removeCard = suggestedCard;
+                }
+            }
+            if(removeCard != null){
+                suggestion.remove(removeCard);
+            }
+        }
     }
 }

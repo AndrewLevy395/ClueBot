@@ -7,7 +7,7 @@
 package cluebot;
 
 /**
- * Description
+ * Clue Bot Logic
  * @version Apr 9, 2020
  */
 public class ClueBotLogic {
