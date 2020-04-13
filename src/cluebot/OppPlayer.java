@@ -38,12 +38,50 @@ public class OppPlayer {
     }
 
     /**
+     * Add a card to an opposing player's hand
+     * @param handCard The card being added
+     */
+    public void setHand(Card handCard) {
+        this.hand.add(handCard);
+    }
+
+    /**
+     * Get the list of impossible cards
+     * @return The list of impossible cards
+     */
+    public ArrayList<Card> getImpossibleCards() {
+        return this.impossibleCards;
+    }
+
+    /**
+     * Add a card to the list of impossible cards for an opposing player
+     */
+    public void setImpossible(Card impossibleCard) {
+        this.impossibleCards.add(impossibleCard);
+    }
+
+    /**
+     * Display an opposing player's known hand and the list of cards that the user knows they do not have
+     */
+    public void display() {
+        System.out.println(this.getName() + "'s hand:");
+        for(Card C : hand){
+            System.out.println(C.getName());
+        }
+        System.out.println();
+        System.out.println("Cards that are impossible for " + this.getName() + " to have:");
+        for(Card C : impossibleCards){
+            System.out.println(C.getName());
+        }
+    }
+
+    /**
      * Takes the revealed card and adds it to the players hand
      * Removes card from the players possible list of cards
      * @param card Card that was revealed to the user
      */
     public void reveal(Card card){
-        this.hand.add(card);
+        setHand(card);
         Card removeCard = null;
         for(ArrayList<Card> suggestion : possibleCards){
             for(Card suggestedCard : suggestion){
