@@ -38,11 +38,21 @@ public class OppPlayer {
     }
 
     /**
+     * Get players hand
+     * @return hand
+     */
+    public ArrayList<Card> getHand(){
+        return hand;
+    }
+
+    /**
      * Add a card to an opposing player's hand
      * @param handCard The card being added
      */
     public void setHand(Card handCard) {
-        this.hand.add(handCard);
+        if(!hand.contains(handCard)){
+            this.hand.add(handCard);
+        }
     }
 
     /**
@@ -54,10 +64,27 @@ public class OppPlayer {
     }
 
     /**
+     * Get the list of possible cards
+     * @return The list of possible cards
+     */
+    public ArrayList<ArrayList<Card>> getPossibleCards() {
+        return this.possibleCards;
+    }
+
+    /**
      * Add a card to the list of impossible cards for an opposing player
      */
     public void setImpossible(Card impossibleCard) {
-        this.impossibleCards.add(impossibleCard);
+        if(!impossibleCards.contains(impossibleCard)){
+            this.impossibleCards.add(impossibleCard);
+            for(ArrayList<Card> a : possibleCards){
+                for(Card c : a){
+                    if(c == impossibleCard){
+                        a.remove(c);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -73,6 +100,15 @@ public class OppPlayer {
         for(Card C : impossibleCards){
             System.out.println(C.getName());
         }
+        System.out.println();
+        System.out.println("Cards that are possible for " + this.getName() + " to have:");
+        for(ArrayList<Card> A : possibleCards){
+            for(Card C : A){
+                System.out.print(C.getName() + " | ");
+            }
+            System.out.println();
+        }
+        System.out.println();
     }
 
     /**
@@ -100,7 +136,13 @@ public class OppPlayer {
      * @param cards List of three suggested cards , one of which was revealed by the player
      */
     public void witness(ArrayList<Card> cards){
-        possibleCards.add(cards);
+        ArrayList<Card> possible = new ArrayList<>();
+        for(Card c : cards){
+            if(!impossibleCards.contains(c)){
+                possible.add(c);
+            }
+        }
+        possibleCards.add(possible);
     }
 
     /**
@@ -110,17 +152,6 @@ public class OppPlayer {
      */
     public void pass(Card card){
         setImpossible(card);
-        Card removeCard = null;
-        for(ArrayList<Card> suggestion : possibleCards){
-            for(Card suggestedCard : suggestion){
-                if(suggestedCard.getName().equals(card.getName())){
-                    removeCard = suggestedCard;
-                }
-            }
-            if(removeCard != null){
-                suggestion.remove(removeCard);
-            }
-        }
     }
 
     //

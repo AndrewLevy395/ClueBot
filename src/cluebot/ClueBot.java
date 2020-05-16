@@ -7,6 +7,7 @@
 package cluebot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /**
@@ -65,6 +66,9 @@ public class ClueBot
                 case "pass":
                     ClueBot.pass();
                     break;
+                case "remaining":
+                    ClueBot.remain();
+                    break;
                 case "display":
                     ClueBot.display();
                     break;
@@ -75,6 +79,7 @@ public class ClueBot
                     System.out.println("Type one of three options:");
                     System.out.println("Reveal - an opposing player reveals a card to you after you make a suggestion");
                     System.out.println("Witness - witness an opposing player reveal a card to another opposing player after they make a suggestion");
+                    System.out.println("Remaining - shows a list of the remaining cards with unknown alibi");
                     System.out.println("Display - display the known hand of an opposing player as well as a list of cards that are impossible for them to have");
                     System.out.println("Undo - remove the prior clue");
                     System.out.println("Pass - an opposing player has no cards and must pass during a suggestion");
@@ -94,7 +99,7 @@ public class ClueBot
         addToCardSet(suspects, "suspect");
         addToCardSet(weapons, "weapon");
         addToCardSet(rooms, "room");
-        cluebotlogic = new ClueBotLogic(allCards);
+        cluebotlogic = new ClueBotLogic(suspects, weapons, rooms);
     }
 
     /**
@@ -116,7 +121,11 @@ public class ClueBot
             if(revealPlayer == null){
                 System.out.println("Invalid player name");
             } else {
-                System.out.println("test1");
+                for(OppPlayer op : players){
+                    if(op.getName() != revealPlayer.getName()){
+                        op.setImpossible(revealCard);
+                    }
+                }
                 revealPlayer.reveal(revealCard);
             }
         }
@@ -135,7 +144,7 @@ public class ClueBot
             }
         }
         Integer witnessCount = 0;
-        ArrayList<Card> witnessList = null;
+        ArrayList<Card> witnessList = new ArrayList<>();
         Card witnessCard = null;
         String witnessType = null;
         while(witnessCount < 3) {
@@ -161,7 +170,15 @@ public class ClueBot
                 if(witnessCard.getType() != witnessType){
                     witnessCard = null;
                 } else {
-                    witnessList.add(witnessCard);
+                    Boolean possible = true;
+                    for(Card c : hand){
+                        if(witnessCard == c){
+                            possible = false;
+                        }
+                    }
+                    if(possible){
+                        witnessList.add(witnessCard);
+                    }
                     witnessCount++;
                 }
             }
@@ -206,6 +223,8 @@ public class ClueBot
             } else {
                 if(passCard.getType() != passType){
                     passCard = null;
+                } else if(hand.contains(passCard)){
+                    passCount++;
                 } else {
                     passPlayer.pass(passCard);
                     passCount++;
@@ -235,6 +254,52 @@ public class ClueBot
         }
     }
 
+    /**
+     * Prints all of the cards that are still possible to be guilty
+     */
+    public static void remain(){
+        ArrayList<String> remainingS = new ArrayList<String>(Arrays.asList(suspects));
+        ArrayList<String> remainingW = new ArrayList<String>(Arrays.asList(weapons));
+        ArrayList<String> remainingR = new ArrayList<String>(Arrays.asList(rooms));
+        for(OppPlayer p : players){
+            for(Card c : p.getHand()){
+                if(remainingS.contains(c.getName())){
+                    remainingS.remove(c.getName());
+                } else if(remainingR.contains(c.getName())){
+                    remainingR.remove(c.getName());
+                } else if(remainingW.contains(c.getName())){
+                    remainingW.remove(c.getName());
+                }
+            }
+        }
+        for(Card h : hand){
+            if(remainingS.contains(h.getName())){
+                remainingS.remove(h.getName());
+            } else if(remainingR.contains(h.getName())){
+                remainingR.remove(h.getName());
+            } else if(remainingW.contains(h.getName())){
+                remainingW.remove(h.getName());
+            }
+        }
+        System.out.println("All Remaining Suspects:");
+        for(String s : remainingS){
+            System.out.println(s);
+        }
+        System.out.println();
+        System.out.println("All Remaining Weapons:");
+        for(String w : remainingW){
+            System.out.println(w);
+        }
+        System.out.println();
+        System.out.println("All Remaining Rooms:");
+        for(String r : remainingR){
+            System.out.println(r);
+        }
+    }
+
+    /**
+     * TODO
+     */
     public static void undo(){
         System.out.println("REMOVE");
     }
