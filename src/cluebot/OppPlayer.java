@@ -96,11 +96,19 @@ public class OppPlayer {
     }
 
     /**
-     * Takes the reveal card and sets it to be impossible for this user to have
+     * Adds array list of cards to the players possible list of cards
+     * @param cards List of three suggested cards , one of which was revealed by the player
+     */
+    public void witness(ArrayList<Card> cards){
+        possibleCards.add(cards);
+    }
+
+    /**
+     * Takes the passed card and sets it to be impossible for this user to have
      * Removes card from the players possible list of cards
      * @param card Card that was passed by the player
      */
-    public void witness(Card card){
+    public void pass(Card card){
         setImpossible(card);
         Card removeCard = null;
         for(ArrayList<Card> suggestion : possibleCards){

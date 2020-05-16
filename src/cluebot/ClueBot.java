@@ -123,47 +123,50 @@ public class ClueBot
     }
 
     /**
-     * User witnesses another player pass on a reveal
+     * Method that runs when the user witnesses an opposing player reveal to another opposing player
+     * Asks for the three cards revealed as well as the player that did the revealing
      */
     public static void witness(){
         OppPlayer witnessPlayer = null;
         while(witnessPlayer == null) {
-            witnessPlayer = retrieveOppPlayerFromUser("Which opposing player passed?");
+            witnessPlayer = retrieveOppPlayerFromUser("Which opposing player did you witness reveal a card to another player? (Who showed the card?)");
             if(witnessPlayer == null){
                 System.out.println("Invalid player name");
             }
         }
-        Integer passCount = 0;
-        Card revealCard = null;
-        String revealType = null;
-        while(passCount < 3) {
-            switch(passCount){
+        Integer witnessCount = 0;
+        ArrayList<Card> witnessList = null;
+        Card witnessCard = null;
+        String witnessType = null;
+        while(witnessCount < 3) {
+            switch(witnessCount){
                 case 0:
-                    revealCard = retrieveCardFromUser("Which suspect was revealed to you?");
-                    revealType = "suspect";
+                    witnessCard = retrieveCardFromUser("Which suspect was revealed?");
+                    witnessType = "suspect";
                     break;
                 case 1:
-                    revealCard = retrieveCardFromUser("Which weapon was revealed to you?");
-                    revealType = "weapon";
+                    witnessCard = retrieveCardFromUser("Which weapon was revealed?");
+                    witnessType = "weapon";
                     break;
                 case 2:
-                    revealCard = retrieveCardFromUser("Which room was revealed to you?");
-                    revealType = "room";
+                    witnessCard = retrieveCardFromUser("Which room was revealed?");
+                    witnessType = "room";
                     break;
                 default:
                     System.out.println("How did you even get to this error?");
             }
-            if(revealCard == null){
-                System.out.println("Invalid card name of type " + revealType);
+            if(witnessCard == null){
+                System.out.println("Invalid card name of type " + witnessType);
             } else {
-                if(revealCard.getType() != revealType){
-                    revealCard = null;
+                if(witnessCard.getType() != witnessType){
+                    witnessCard = null;
                 } else {
-                    witnessPlayer.witness(revealCard);
-                    passCount++;
+                    witnessList.add(witnessCard);
+                    witnessCount++;
                 }
             }
         }
+        witnessPlayer.witness(witnessList);
     }
 
     /**
@@ -171,7 +174,44 @@ public class ClueBot
      * Asks for the three cards passed on and updates the list of impossible cards for that player
      */
     public static void pass(){
-        System.out.println("PASS");
+        OppPlayer passPlayer = null;
+        while(passPlayer == null) {
+            passPlayer = retrieveOppPlayerFromUser("Which opposing player passed?");
+            if(passPlayer == null){
+                System.out.println("Invalid player name");
+            }
+        }
+        Integer passCount = 0;
+        Card passCard = null;
+        String passType = null;
+        while(passCount < 3) {
+            switch(passCount){
+                case 0:
+                    passCard = retrieveCardFromUser("Which suspect passed on?");
+                    passType = "suspect";
+                    break;
+                case 1:
+                    passCard = retrieveCardFromUser("Which weapon was passed on?");
+                    passType = "weapon";
+                    break;
+                case 2:
+                    passCard = retrieveCardFromUser("Which room was passed on?");
+                    passType = "room";
+                    break;
+                default:
+                    System.out.println("How did you even get to this error?");
+            }
+            if(passCard == null){
+                System.out.println("Invalid card name of type " + passType);
+            } else {
+                if(passCard.getType() != passType){
+                    passCard = null;
+                } else {
+                    passPlayer.pass(passCard);
+                    passCount++;
+                }
+            }
+        }
     }
 
     /**

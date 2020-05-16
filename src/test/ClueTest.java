@@ -46,7 +46,7 @@ public class ClueTest {
     }
 
     @Test
-    public void testWitness() {
+    public void testPass() {
         ArrayList<Card> hand = new ArrayList<>();
         hand = makeHandCards();
         Card knife = new Card("knife", "weapon");
