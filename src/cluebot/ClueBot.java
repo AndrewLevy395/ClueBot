@@ -54,7 +54,7 @@ public class ClueBot
         Boolean gameOver = false;
         while(!gameOver) {
             System.out.println();
-            System.out.println("What is the next clue? (Type \"help\" for options)");
+            System.out.println("What is the next event? (Type \"help\" for options)");
             String clue = scanner.nextLine();
             switch(clue.toLowerCase()){
                 case "reveal":
@@ -76,7 +76,7 @@ public class ClueBot
                     ClueBot.undo();
                     break;
                 case "help":
-                    System.out.println("Type one of three options:");
+                    System.out.println("Type one of these options:");
                     System.out.println("Reveal - an opposing player reveals a card to you after you make a suggestion");
                     System.out.println("Witness - witness an opposing player reveal a card to another opposing player after they make a suggestion");
                     System.out.println("Remaining - shows a list of the remaining cards with unknown alibi");
