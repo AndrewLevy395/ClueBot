@@ -94,4 +94,56 @@ public class OppPlayer {
             }
         }
     }
+
+    /**
+     * Takes the reveal card and sets it to be impossible for this user to have
+     * Removes card from the players possible list of cards
+     * @param card Card that was passed by the player
+     */
+    public void witness(Card card){
+        setImpossible(card);
+        Card removeCard = null;
+        for(ArrayList<Card> suggestion : possibleCards){
+            for(Card suggestedCard : suggestion){
+                if(suggestedCard.getName().equals(card.getName())){
+                    removeCard = suggestedCard;
+                }
+            }
+            if(removeCard != null){
+                suggestion.remove(removeCard);
+            }
+        }
+    }
+
+    //
+    // FOR TESTING PURPOSES
+    //
+
+    /**
+     * Check to see if opposing player's hand contains a certain card
+     * @param handCard The card being checked
+     * @return true if hand contains card
+     */
+    public boolean handContains(Card handCard) {
+        for(Card c : hand){
+            if(c.getName() == handCard.getName()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check to see if opposing player's hand contains a certain card
+     * @param handCard The card being checked
+     * @return true if hand contains card
+     */
+    public boolean impossibleContains(Card handCard) {
+        for(Card c : impossibleCards){
+            if(c.getName() == handCard.getName()){
+                return true;
+            }
+        }
+        return false;
+    }
 }

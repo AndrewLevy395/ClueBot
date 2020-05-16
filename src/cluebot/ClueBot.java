@@ -25,10 +25,8 @@ public class ClueBot
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        ClueBot.addToCardSet(suspects, "suspects");
-        ClueBot.addToCardSet(weapons, "weapons");
-        ClueBot.addToCardSet(rooms, "rooms");
-        cluebotlogic = new ClueBotLogic(allCards);
+        prepareGame();
+        System.out.println();
         System.out.println("Hello and Welcome to ClueBot!");
         System.out.println("How many players? (including yourself)");
         Integer numPlayers = Integer.parseInt(scanner.nextLine());
@@ -90,51 +88,95 @@ public class ClueBot
     }
 
     /**
+     * Prepares the list of cards as well as the initial cluebot logic
+     */
+    public static void prepareGame() {
+        addToCardSet(suspects, "suspect");
+        addToCardSet(weapons, "weapon");
+        addToCardSet(rooms, "room");
+        cluebotlogic = new ClueBotLogic(allCards);
+    }
+
+    /**
      * Method that runs when an opposing player reveals a card to the user
      * Asks for the card and the opposing player and updates the opposing players hand
      */
     public static void reveal() {
         Card revealCard = null;
-
-        Boolean valid = false;
-        while(!valid) {
-            System.out.println("Which card was revealed to you?");
-            String revealCardString = scanner.nextLine().toLowerCase();
-            for(Integer j = 0; j < allCards.size(); j++){
-                if(allCards.get(j).getName().equals(revealCardString)){
-                    revealCard = allCards.get(j);
-                    valid = true;
-                }
-            }
+        while(revealCard == null) {
+            revealCard = retrieveCardFromUser("Which card was revealed to you?");
             if(revealCard == null){
                 System.out.println("Invalid card name");
             }
         }
 
-        valid = false;
-        while(!valid) {
-            System.out.println("Which opposing player revealed that card to you?");
-            String revealPlayerString = scanner.nextLine().toLowerCase();
-            for(Integer j = 0; j < players.length; j++){
-                if(players[j].getName().equals(revealPlayerString)){
-                    valid = true;
-                    players[j].reveal(revealCard);
-                }
-            }
-            if(!valid){
+        OppPlayer revealPlayer = null;
+        while(revealPlayer == null) {
+            revealPlayer = retrieveOppPlayerFromUser("Which opposing player revealed that card to you?");
+            if(revealPlayer == null){
                 System.out.println("Invalid player name");
+            } else {
+                System.out.println("test1");
+                revealPlayer.reveal(revealCard);
             }
         }
     }
 
+    /**
+     * User witnesses another player pass on a reveal
+     */
     public static void witness(){
-        System.out.println("WITNESS");
+        OppPlayer witnessPlayer = null;
+        while(witnessPlayer == null) {
+            witnessPlayer = retrieveOppPlayerFromUser("Which opposing player passed?");
+            if(witnessPlayer == null){
+                System.out.println("Invalid player name");
+            }
+        }
+        Integer passCount = 0;
+        Card revealCard = null;
+        String revealType = null;
+        while(passCount < 3) {
+            switch(passCount){
+                case 0:
+                    revealCard = retrieveCardFromUser("Which suspect was revealed to you?");
+                    revealType = "suspect";
+                    break;
+                case 1:
+                    revealCard = retrieveCardFromUser("Which weapon was revealed to you?");
+                    revealType = "weapon";
+                    break;
+                case 2:
+                    revealCard = retrieveCardFromUser("Which room was revealed to you?");
+                    revealType = "room";
+                    break;
+                default:
+                    System.out.println("How did you even get to this error?");
+            }
+            if(revealCard == null){
+                System.out.println("Invalid card name of type " + revealType);
+            } else {
+                if(revealCard.getType() != revealType){
+                    revealCard = null;
+                } else {
+                    witnessPlayer.witness(revealCard);
+                    passCount++;
+                }
+            }
+        }
     }
 
+    /**
+     * Method that runs when the user witnesses an opposing player pass on revealing to another opposing player
+     * Asks for the three cards passed on and updates the list of impossible cards for that player
+     */
     public static void pass(){
         System.out.println("PASS");
     }
 
+    /**
+     * Asks the player which opposing player to display and then displays that player's hand and list of impossible cards
+     */
     public static void display(){
         Boolean valid = false;
         while(!valid){
@@ -193,5 +235,57 @@ public class ClueBot
             System.out.println(hand.get(iter).getName());
         }
         System.out.println();
+    }
+
+    /**
+     * Retrieves card from user
+     * @param message message that will be displayed to user about the card they're inputting
+     */
+    public static Card retrieveCardFromUser(String message){
+        Card card = null;
+        System.out.println(message);
+        String retrieveCardString = scanner.nextLine().toLowerCase();
+        for(Integer j = 0; j < allCards.size(); j++){
+            if(allCards.get(j).getName().equals(retrieveCardString)){
+                card = allCards.get(j);
+            }
+        }
+        return card;
+    }
+
+    /**
+     * Retrieves opposing player from user
+     * @param message message that will be displayed to user about the opposing player they're inputting
+     */
+    public static OppPlayer retrieveOppPlayerFromUser(String message){
+        OppPlayer player = null;
+        System.out.println(message);
+        String retrievePlayerString = scanner.nextLine().toLowerCase();
+        for(Integer j = 0; j < players.length; j++){
+            if(players[j].getName().equals(retrievePlayerString)){
+                player = players[j];
+            }
+        }
+        return player;
+    }
+
+    //
+    // CLASSES FOR TESTING PURPOSES ONLY
+    //
+
+    /**
+     * Sets the array of players
+     * @param playerList array of players to be set
+     */
+    public static void setPlayers(OppPlayer[] playerList){
+        players = playerList;
+    }
+
+    /**
+     * Gets the array of players
+     * @return array of players to be gotten
+     */
+    public static OppPlayer[] getPlayers(){
+        return players;
     }
 }
