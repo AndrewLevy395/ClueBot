@@ -1,7 +1,7 @@
 /*******************************************************************************
  * ClueBot
  *
- * Copyright ©2020 Andrew Levy, Austin Ingarra
+ * Andrew Levy, Austin Ingarra
  *******************************************************************************/
 
 package cluebot;
@@ -204,7 +204,7 @@ public class ClueBot
         while(passCount < 3) {
             switch(passCount){
                 case 0:
-                    passCard = retrieveCardFromUser("Which suspect passed on?");
+                    passCard = retrieveCardFromUser("Which suspect was passed on?");
                     passType = "suspect";
                     break;
                 case 1:
