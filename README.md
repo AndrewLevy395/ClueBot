@@ -32,6 +32,5 @@ of the murder and win many matches of the great board game of Clue. Enjoy!
 
 TODO:
 
-- Undo still has not been implemented
 - Witness prediction
 - Card suggestions to user

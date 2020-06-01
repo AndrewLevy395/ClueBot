@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * Class for storing information on an opposing player
  * @version Apr 9, 2020
  */
-public class OppPlayer {
+public class OppPlayer implements Cloneable {
     private String name;
     private ArrayList<Card> hand; //cards in the players hand
     private ArrayList<Card> impossibleCards; //cards that are impossible for the player to have in their hand
@@ -27,6 +27,21 @@ public class OppPlayer {
         this.hand = new ArrayList<>();
         this.impossibleCards = new ArrayList<>();
         this.possibleCards  = new ArrayList<>();
+    }
+
+    /**
+     * Clones a player
+     * @return cloned player
+     * @throws CloneNotSupportedException exception if cloning fails
+     */
+    @Override
+    public OppPlayer clone() throws CloneNotSupportedException{
+        OppPlayer obj = (OppPlayer)super.clone();
+        obj.name = this.name;
+        obj.hand = new ArrayList<>(this.hand);
+        obj.impossibleCards = new ArrayList<>(this.impossibleCards);
+        obj.possibleCards = new ArrayList<>(this.possibleCards);
+        return obj;
     }
 
     /**

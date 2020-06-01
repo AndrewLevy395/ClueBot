@@ -9,6 +9,7 @@ package cluebot;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.*;
 
 /**
  * Runs clue bot
@@ -24,6 +25,7 @@ public class ClueBot
     private static ArrayList<Card> hand = new ArrayList<>(); //list of cards in player's personal hand
     private static ClueBotLogic cluebotlogic;
     private static Scanner scanner = new Scanner(System.in);
+    private static Stack<OppPlayer[]> undoStack = new Stack();
 
     public static void main(String[] args) {
         prepareGame();
@@ -51,6 +53,8 @@ public class ClueBot
             }
         }
 
+        updateStack(players);
+
         Boolean gameOver = false;
         while(!gameOver) {
             System.out.println();
@@ -59,12 +63,15 @@ public class ClueBot
             switch(clue.toLowerCase()){
                 case "reveal":
                     ClueBot.reveal();
+                    updateStack(players);
                     break;
                 case "witness":
                     ClueBot.witness();
+                    updateStack(players);
                     break;
                 case "pass":
                     ClueBot.pass();
+                    updateStack(players);
                     break;
                 case "remaining":
                     ClueBot.remain();
@@ -74,6 +81,7 @@ public class ClueBot
                     break;
                 case "undo":
                     ClueBot.undo();
+                    System.out.println("undo complete");
                     break;
                 case "help":
                     System.out.println("Type one of these options:");
@@ -298,10 +306,16 @@ public class ClueBot
     }
 
     /**
-     * TODO
+     * Undos previous move by removing it from the stack
      */
     public static void undo(){
-        System.out.println("REMOVE");
+        if (undoStack.size() > 1){
+            undoStack.pop();
+            players = undoStack.peek();
+        }
+        else {
+            System.out.println("You cannot perform this function yet.");
+        }
     }
 
     /**
@@ -372,6 +386,23 @@ public class ClueBot
             }
         }
         return player;
+    }
+
+    /**
+     * updates the stack by cloning players and adding the list of them to the stack
+     * @param players list of players
+     */
+    public static void updateStack(OppPlayer[] players){
+        OppPlayer[] clonePlayers = new OppPlayer[players.length];
+        for(int i = 0 ; i < players.length ; i++) {
+            try {
+                clonePlayers[i] = players[i].clone();
+            }
+            catch(Exception e){
+                System.out.println(e);
+            }
+        }
+        undoStack.push(clonePlayers);
     }
 
     //
